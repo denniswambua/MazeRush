@@ -1,0 +1,310 @@
+[gd_scene load_steps=16 format=3 uid="uid://kkxoxwv6mbyf"]
+
+[ext_resource type="MeshLibrary" uid="uid://cjmmwoaejiyir" path="res://assets/TilesLib.tres" id="1_v2hyu"]
+[ext_resource type="Script" uid="uid://dkdvbrt2qyjqk" path="res://Scripts/maze.gd" id="1_yuvd5"]
+[ext_resource type="Shader" uid="uid://dws7w177xek0i" path="res://assets/world.gdshader" id="2_7hfkg"]
+[ext_resource type="Shader" uid="uid://dtpnfg2f223oe" path="res://Scenes/water.gdshader" id="3_hdl3g"]
+[ext_resource type="Texture2D" uid="uid://bcotbk4baq2d0" path="res://assets/Previews/coin.png" id="5_5lbnq"]
+[ext_resource type="Texture2D" uid="uid://cwhy7lns5gj6q" path="res://assets/label_HP_bg.png" id="5_g4w1m"]
+[ext_resource type="FontFile" uid="uid://dru8s8m0jkbmy" path="res://assets/Tagesschrift/Tagesschrift-Regular.ttf" id="5_sww8e"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5lbnq"]
+shader = ExtResource("2_7hfkg")
+shader_parameter/background_dark = false
+
+[sub_resource type="Sky" id="Sky_g4w1m"]
+sky_material = SubResource("ShaderMaterial_5lbnq")
+
+[sub_resource type="Environment" id="Environment_sww8e"]
+background_mode = 2
+sky = SubResource("Sky_g4w1m")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7hfkg"]
+render_priority = 0
+shader = ExtResource("3_hdl3g")
+shader_parameter/WATER_COL = Vector4(0.04, 0.38, 0.88, 1)
+shader_parameter/WATER2_COL = Vector4(0.04, 0.35, 0.78, 1)
+shader_parameter/FOAM_COL = Vector4(0.8125, 0.9609, 0.9648, 1)
+shader_parameter/distortion_speed = 2.0
+shader_parameter/tile = Vector2(30, 30)
+shader_parameter/height = 1.0
+shader_parameter/wave_size = Vector2(1, 1)
+shader_parameter/wave_speed = 1.5
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5lbnq"]
+material = SubResource("ShaderMaterial_7hfkg")
+
+[sub_resource type="LabelSettings" id="LabelSettings_7yhxv"]
+font_size = 83
+outline_size = 6
+outline_color = Color(0.176419, 0.176419, 0.176419, 1)
+shadow_size = 5
+shadow_color = Color(0.225265, 0.225265, 0.225265, 0)
+shadow_offset = Vector2(5, 4)
+
+[sub_resource type="LabelSettings" id="LabelSettings_14cn6"]
+line_spacing = 1.0
+font = ExtResource("5_sww8e")
+font_size = 108
+font_color = Color(1, 0.407843, 1, 1)
+shadow_size = 5
+shadow_color = Color(0.772549, 0.403922, 0.956863, 0.701961)
+
+[sub_resource type="LabelSettings" id="LabelSettings_g4w1m"]
+font_size = 36
+outline_size = 4
+outline_color = Color(0.348566, 0.348566, 0.348566, 1)
+shadow_size = 5
+shadow_color = Color(0.150556, 0.150556, 0.150556, 0.843137)
+
+[node name="Maze" type="Node3D"]
+script = ExtResource("1_yuvd5")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_sww8e")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.747729, 0.664005, 0, -0.664005, -0.747729, 0, -0.388931, 0)
+
+[node name="GridMap" type="GridMap" parent="."]
+mesh_library = ExtResource("1_v2hyu")
+
+[node name="Water" type="MeshInstance3D" parent="."]
+transform = Transform3D(100, 0, 0, 0, 5, 0, 0, 0, 100, 0, 0, 0)
+visible = false
+mesh = SubResource("PlaneMesh_5lbnq")
+
+[node name="UI" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ColorRect" type="ColorRect" parent="UI/MarginContainer"]
+layout_mode = 2
+color = Color(0.301961, 0.2, 0.545098, 0.494118)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_constants/separation = 5
+
+[node name="Start" type="Button" parent="UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_sww8e")
+theme_override_font_sizes/font_size = 29
+text = "Start"
+
+[node name="HSeparator" type="HSeparator" parent="UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Seed" type="TextEdit" parent="UI/MarginContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_sww8e")
+placeholder_text = "seed"
+context_menu_enabled = false
+emoji_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+middle_mouse_paste_enabled = false
+empty_selection_clipboard_enabled = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 10
+
+[node name="width" type="TextEdit" parent="UI/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_sww8e")
+placeholder_text = "width"
+context_menu_enabled = false
+emoji_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+middle_mouse_paste_enabled = false
+empty_selection_clipboard_enabled = false
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 10
+
+[node name="height" type="TextEdit" parent="UI/MarginContainer/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_sww8e")
+placeholder_text = "height"
+context_menu_enabled = false
+emoji_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+middle_mouse_paste_enabled = false
+empty_selection_clipboard_enabled = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Label" type="Label" parent="UI/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Maze
+"
+label_settings = SubResource("LabelSettings_7yhxv")
+
+[node name="Label2" type="Label" parent="UI/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "rush"
+label_settings = SubResource("LabelSettings_14cn6")
+horizontal_alignment = 3
+vertical_alignment = 1
+uppercase = true
+
+[node name="Gui" type="Control" parent="."]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Gui"]
+custom_minimum_size = Vector2(120, 50)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_right = 83.0
+offset_bottom = 60.0
+grow_horizontal = 2
+texture = ExtResource("5_g4w1m")
+patch_margin_left = 22
+patch_margin_top = 12
+patch_margin_right = 20
+patch_margin_bottom = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Gui/NinePatchRect"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -60.5
+offset_right = 60.5
+offset_bottom = 64.0
+grow_horizontal = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Collection" type="Label" parent="Gui/NinePatchRect/HBoxContainer"]
+layout_mode = 2
+text = "4/6"
+label_settings = SubResource("LabelSettings_g4w1m")
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="Gui/NinePatchRect/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("5_5lbnq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Gui"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -52.5
+offset_top = -86.0
+offset_right = 52.5
+offset_bottom = 86.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="intro" type="RichTextLabel" parent="Gui/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("5_sww8e")
+theme_override_font_sizes/normal_font_size = 24
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="Continue" type="Button" parent="Gui/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_sww8e")
+theme_override_font_sizes/font_size = 24
+text = "Continue"
+
+[node name="Quit" type="Button" parent="Gui/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_sww8e")
+theme_override_font_sizes/font_size = 24
+text = "Quit"
+
+[node name="NinePatchRect2" type="NinePatchRect" parent="Gui"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -21.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("5_g4w1m")
+patch_margin_left = 24
+patch_margin_top = 9
+patch_margin_right = 15
+patch_margin_bottom = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Gui/NinePatchRect2"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 100
+
+[node name="Seed" type="Label" parent="Gui/NinePatchRect2/HBoxContainer"]
+custom_minimum_size = Vector2(60, 20)
+layout_mode = 2
+size_flags_vertical = 8
+text = "Seed: 3170594323"
+horizontal_alignment = 1
+
+[node name="Size" type="Label" parent="Gui/NinePatchRect2/HBoxContainer"]
+layout_mode = 2
+text = "Size: 10 by 10"
+
+[connection signal="pressed" from="UI/MarginContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Gui/VBoxContainer/Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="Gui/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
